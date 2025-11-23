@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="Java_Chat_Room" options="-parameters" />
+      <module name="Java_Chat_Room" options="" />
     </option>
   </component>
 </project>
