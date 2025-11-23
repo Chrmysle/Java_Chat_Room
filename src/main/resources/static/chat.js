@@ -40,6 +40,9 @@ messageInput.addEventListener("keypress", (e) => {
 ws.onmessage = (event) => {
     const msg = JSON.parse(event.data);
 
+    // 如果是自己发的消息，直接忽略
+    if (msg.fromUser === username) return;
+
     // 群聊消息显示，私聊显示给自己或自己发出的
     if (msg.type === "group" || msg.toUser === username || msg.fromUser === username) {
         displayMessage(msg);

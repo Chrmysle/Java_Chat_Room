@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Java Chat Room</title>
     <style>
-        /* Reset & 基础 */
+        /* 基础重置 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -37,7 +37,7 @@
         /* 聊天容器 */
         #chatContainer {
             background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
+            backdrop-filter: blur(25px);
             border-radius: 25px;
             padding: 30px;
             width: 95%;
@@ -58,11 +58,6 @@
             outline: none;
             background: rgba(255,255,255,0.2);
             color: #fff;
-            transition: all 0.3s ease;
-        }
-        #userSelect:focus {
-            border-color: #ffec00;
-            box-shadow: 0 0 15px #ffec00;
         }
 
         /* 聊天框 */
@@ -72,12 +67,12 @@
             border-radius: 20px;
             overflow-y: auto;
             padding: 20px;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0,0,0,0.15);
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(15px);
         }
 
         /* 消息气泡 */
@@ -91,14 +86,75 @@
             line-height: 1.4;
             animation: fadeIn 0.5s ease;
             color: #fff;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
         }
+
         @keyframes fadeIn {
             from {opacity:0; transform:translateY(10px);}
             to {opacity:1; transform:translateY(0);}
         }
-        .private { background: linear-gradient(135deg, #00c6ff, #0072ff); align-self: flex-start; }
-        .group { background: linear-gradient(135deg, #00ff95, #00d4ff); align-self: flex-start; }
-        .self { background: linear-gradient(135deg, #ff416c, #ff4b2b); align-self: flex-end; }
+
+        /* 不同用户随机柔和渐变色 */
+        .message[data-user] {
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+        }
+        .message[data-user="self"] {
+            background: linear-gradient(135deg, #a18cd1, #fbc2eb);
+            align-self: flex-end;
+        }
+        /* 系统消息样式 */
+        .message[data-user="system"] {
+            background: linear-gradient(135deg, rgba(255, 242, 153,0.8), rgba(255, 200, 112,0.8));
+            color: #333;
+            align-self: center;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(15px);
+            font-weight: 600;
+        }
+
+        /* 用户选择美化 */
+        #userSelect {
+            width: 100%;
+            padding: 15px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            -webkit-appearance: none; /* 去掉默认箭头样式 */
+            appearance: none;
+            position: relative;
+        }
+
+        /* 鼠标悬停效果 */
+        #userSelect:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        /* 聚焦效果 */
+        #userSelect:focus {
+            box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.7), 0 0 35px 12px rgba(255, 223, 0, 0.5);
+            animation: glowPulse 1.2s ease-in-out infinite alternate;
+        }
+
+        /* 自定义箭头 */
+        #userSelect::after {
+            content: "▼";
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #fff;
+            font-size: 0.8rem;
+        }
+
 
         /* 时间戳 */
         .message .time {
@@ -110,24 +166,39 @@
         }
 
         /* 输入区域 */
-        #inputContainer {
-            display: flex;
-            gap: 15px;
-        }
+        #inputContainer { display:flex; gap:15px; }
+
+        /* 输入框 */
         #messageInput {
-            flex: 1;
-            padding: 15px 20px;
-            border-radius: 25px;
-            border: none;
-            font-size: 1rem;
-            outline: none;
+            flex:1;
+            padding:15px 20px;
+            border-radius:25px;
+            border:none;
+            font-size:1rem;
+            outline:none;
             background: rgba(255,255,255,0.15);
-            color: #fff;
+            color:#fff;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
+
+        /* 输入框聚焦金色光晕效果 */
         #messageInput:focus {
-            box-shadow: 0 0 15px #ffec00;
+            box-shadow: 0 0 15px 3px rgba(255, 215, 0, 0.7), 0 0 30px 10px rgba(255, 223, 0, 0.5);
+            animation: glowPulse 1.2s ease-in-out infinite alternate;
+            border: 1px solid rgba(255, 215, 0, 0.8);
+        }
+
+        @keyframes glowPulse {
+            0% {
+                box-shadow: 0 0 10px 2px rgba(255, 215, 0, 0.5), 0 0 20px 5px rgba(255, 223, 0, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.8), 0 0 35px 12px rgba(255, 223, 0, 0.5);
+            }
+            100% {
+                box-shadow: 0 0 15px 3px rgba(255, 215, 0, 0.7), 0 0 30px 10px rgba(255, 223, 0, 0.5);
+            }
         }
 
         /* 发送按钮 */
@@ -143,20 +214,21 @@
             box-shadow: 0 5px 20px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
         }
+
+        /* 鼠标悬停和点击反馈 */
         #sendBtn:hover {
             transform: translateY(-3px) scale(1.05);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        #sendBtn:active {
+            box-shadow: 0 0 20px 5px rgba(255, 215, 0, 0.7), 0 0 35px 12px rgba(255, 223, 0, 0.5);
+            transform: scale(0.98);
         }
 
         /* 自定义滚动条 */
         #chatBox::-webkit-scrollbar { width: 10px; }
         #chatBox::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.3); border-radius: 5px; }
 
-        /* 响应式 */
-        @media(max-width:768px){
-            h1{ font-size:2rem; }
-            #chatBox{ height:400px; }
-        }
     </style>
 </head>
 <body>
@@ -177,6 +249,77 @@
     </div>
 </div>
 
-<script src="chat.js"></script>
+<script>
+    let username = prompt("请输入你的用户名：") || "游客" + Math.floor(Math.random()*1000);
+    const ws = new WebSocket(`ws://172.20.10.3:8080/chat?username=${username}`);
+    const chatBox = document.getElementById("chatBox");
+    const messageInput = document.getElementById("messageInput");
+    const sendBtn = document.getElementById("sendBtn");
+    const userSelect = document.getElementById("userSelect");
+    let onlineUsers = new Set();
+    let userColors = {}; // 保存每个用户颜色
+
+    function getUserColor(user) {
+        if(user === username) return 'self';
+        if(user === '系统') return 'system';
+        if(!userColors[user]){
+            const colors = [
+                'linear-gradient(135deg,#ff9a9e,#fad0c4)',
+                'linear-gradient(135deg,#a1c4fd,#c2e9fb)',
+                'linear-gradient(135deg,#fbc2eb,#a6c1ee)',
+                'linear-gradient(135deg,#84fab0,#8fd3f4)',
+                'linear-gradient(135deg,#fccb90,#d57eeb)'
+            ];
+            userColors[user] = colors[Math.floor(Math.random()*colors.length)];
+        }
+        return userColors[user];
+    }
+
+    function sendMessage(){
+        const content = messageInput.value.trim();
+        if(!content) return;
+        const toUser = userSelect.value || null;
+        const type = toUser ? 'private':'group';
+        ws.send(JSON.stringify({fromUser:username,toUser,content,type}));
+        messageInput.value = '';
+    }
+
+    sendBtn.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', e => { if(e.key==='Enter') sendMessage(); });
+
+    ws.onmessage = event=>{
+        const msg = JSON.parse(event.data);
+        if(msg.type==='group' || msg.toUser===username || msg.fromUser===username){
+            displayMessage(msg);
+        }
+        if(msg.fromUser && msg.fromUser!=='系统'){
+            onlineUsers.add(msg.fromUser);
+            updateUserSelect();
+        }
+    };
+
+    function displayMessage(msg){
+        const div = document.createElement('div');
+        div.classList.add('message');
+        div.dataset.user = msg.fromUser===username ? 'self' : (msg.fromUser==='系统' ? 'system' : msg.fromUser);
+        div.style.background = getUserColor(msg.fromUser===username ? username : msg.fromUser);
+        const toText = msg.type==='private' ? `(私聊→${msg.toUser})` : '';
+        div.textContent = `[${msg.time||new Date().toLocaleTimeString()}] ${msg.fromUser} ${toText}: ${msg.content}`;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function updateUserSelect(){
+        userSelect.innerHTML = '<option value="">所有人（群聊）</option>';
+        onlineUsers.forEach(user=>{
+            if(user!==username){
+                const opt=document.createElement('option');
+                opt.value=user;
+                opt.textContent=user;
+                userSelect.appendChild(opt);
+            }
+        });
+    }
+</script>
 </body>
 </html>
