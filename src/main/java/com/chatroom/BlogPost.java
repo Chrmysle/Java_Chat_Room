@@ -1,4 +1,4 @@
-package backend;
+package com.chatroom;
 
 public class BlogPost {
 }
