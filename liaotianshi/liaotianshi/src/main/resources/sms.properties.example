@@ -1,9 +1,0 @@
-# 阿里云短信服务配置
-aliyun.accessKeyId=YOUR_ACCESS_KEY_ID
-aliyun.accessKeySecret=YOUR_ACCESS_KEY_SECRET
-aliyun.signName=聊天室
-aliyun.templateCode=SMS_327715539
-aliyun.templateParam={"code":"%s"}
-# 是否启用真实短信发送
-sms.enabled=false
-
