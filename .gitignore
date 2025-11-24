@@ -1,0 +1,23 @@
+# Maven
+target/
+*.war
+*.jar
+*.class
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Sensitive configuration files
+**/sms.properties
+sms.properties
