@@ -1,0 +1,379 @@
+<!-- file: src/main/resources/static/profile.html -->
+<!doctype html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人主页</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Font Awesome 图标库 -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+    <!-- 自定义 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6', // 蓝色作为主色调
+                        secondary: '#64748B', // 灰色作为辅助色
+                        accent: '#10B981', // 绿色作为强调色（在线状态）
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- 自定义工具类和样式 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+            .hover-lift {
+                transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            }
+            .hover-lift:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
+            }
+            .text-shadow {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+            .bg-gradient-custom {
+                background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            }
+            .bg-pattern {
+                background-image:
+                        radial-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px),
+                        radial-gradient(rgba(59, 130, 246, 0.1) 1px, transparent 1px);
+                background-size: 50px 50px;
+                background-position: 0 0, 25px 25px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gradient-custom bg-pattern font-sans text-gray-800 min-h-screen">
+
+<div class="container mx-auto px-4 py-8 max-w-4xl relative">
+    <!-- 装饰元素 -->
+    <div class="absolute -top-10 -left-10 w-40 h-40 bg-primary/5 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-10 -right-10 w-40 h-40 bg-accent/5 rounded-full blur-3xl"></div>
+
+    <!-- 标题区域 -->
+    <header class="text-center mb-12 pt-10 relative z-10">
+        <div class="inline-block mb-4 p-3 bg-white/70 backdrop-blur-sm rounded-full shadow-lg">
+            <i class="fa fa-user-circle-o text-4xl text-primary"></i>
+        </div>
+        <h1 class="text-[clamp(2.2rem,6vw,2.8rem)] font-bold text-gray-900 mb-3 text-shadow tracking-tight">
+            个人主页
+        </h1>
+        <p class="text-gray-600 mt-2 max-w-md mx-auto text-lg">
+            管理你的个人资料和实时消息
+        </p>
+
+        <!-- 标题下方的装饰线 -->
+        <div class="mt-6 flex justify-center">
+            <div class="w-20 h-1 bg-primary rounded-full animate-pulse"></div>
+        </div>
+    </header>
+
+    <!-- 加载用户表单 -->
+    <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 card-shadow mb-8 transform transition-all duration-300 hover:scale-[1.01]">
+        <div class="flex flex-col sm:flex-row gap-4 items-center justify-center">
+            <div class="flex-grow">
+                <label for="usernameInput" class="block text-sm font-medium text-gray-700 mb-1">用户名</label>
+                <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+                            <i class="fa fa-user"></i>
+                        </span>
+                    <input type="text" id="usernameInput" placeholder="输入用户名并点击加载"
+                           class="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                </div>
+            </div>
+            <div class="sm:w-auto w-full">
+                <button id="loadBtn" class="w-full bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg shadow transition-all hover:shadow-lg flex items-center justify-center gap-2 group">
+                    <i class="fa fa-sign-in transition-transform group-hover:translate-x-1"></i>
+                    <span>加载资料</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 个人资料主区域 -->
+    <section id="profileSection" class="grid grid-cols-1 lg:grid-cols-3 gap-8 hidden relative z-10">
+
+        <!-- 左侧：个人信息卡片 -->
+        <div class="lg:col-span-1">
+            <div class="bg-white/90 backdrop-blur-sm rounded-xl overflow-hidden card-shadow hover-lift">
+                <div class="bg-gradient-to-r from-primary/20 to-primary/5 h-24"></div>
+                <div class="px-6 pb-6 relative">
+                    <div class="flex justify-center">
+                        <img id="avatar" class="w-32 h-32 rounded-full border-4 border-white -mt-16 object-cover shadow-lg transition-transform duration-500 hover:scale-105" src="" alt="avatar">
+                    </div>
+                    <div class="text-center mt-2">
+                        <h2 id="displayName" class="text-xl font-bold"></h2>
+                        <p id="usernameDisplay" class="text-gray-500 text-sm"></p>
+                    </div>
+                    <div class="mt-6 space-y-3">
+                        <div class="flex items-start gap-3">
+                            <i class="fa fa-info-circle text-gray-400 mt-1"></i>
+                            <div>
+                                <p class="text-sm font-medium text-gray-700">个人简介</p>
+                                <p id="bio" class="text-gray-600"></p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <i id="statusIcon" class="fa fa-circle text-accent"></i>
+                            <div>
+                                <p id="status" class="text-sm font-medium text-gray-700"></p>
+                                <p id="lastSeen" class="text-gray-500 text-xs"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧：编辑资料和消息区域 -->
+        <div class="lg:col-span-2 space-y-8">
+            <!-- 编辑资料卡片 -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-xl p-6 card-shadow hover-lift">
+                <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <i class="fa fa-pencil text-primary"></i>
+                    <span>编辑资料</span>
+                </h3>
+                <form id="editForm" class="space-y-4">
+                    <div>
+                        <label for="editDisplayName" class="block text-sm font-medium text-gray-700 mb-1">显示名</label>
+                        <input type="text" id="editDisplayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                    </div>
+                    <div>
+                        <label for="editBio" class="block text-sm font-medium text-gray-700 mb-1">简介</label>
+                        <textarea id="editBio" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all"></textarea>
+                    </div>
+                    <div>
+                        <label for="editAvatar" class="block text-sm font-medium text-gray-700 mb-1">头像 URL</label>
+                        <input type="text" id="editAvatar" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/50 focus:border-primary outline-none transition-all">
+                    </div>
+                    <div class="pt-2">
+                        <button type="button" id="saveBtn" class="bg-primary hover:bg-primary/90 text-white font-medium py-2 px-6 rounded-lg shadow transition-all hover:shadow-lg">
+                            保存更改
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- WebSocket 消息卡片 -->
+            <div class="bg-white/90 backdrop-blur-sm rounded-xl overflow-hidden card-shadow hover-lift">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="text-lg font-bold flex items-center gap-2">
+                        <i class="fa fa-comments text-primary"></i>
+                        <span>实时消息</span>
+                    </h3>
+                </div>
+                <div id="messages" class="p-4 h-64 overflow-y-auto space-y-3 bg-gray-50/50"></div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- 页脚 -->
+<footer class="mt-16 text-center text-gray-500 text-sm py-4">
+    <p>© 个人主页系统</p>
+</footer>
+
+<script>
+    const apiBase = '/api/profile';
+    const wsBase = (location.protocol === 'https:' ? 'wss:' : 'ws:') + '//' + location.host + '/chat';
+
+    let currentUsername = null;
+    let ws;
+
+    function generateAvatarUrl(name) {
+        const n = (name || '游客').trim() || '游客';
+        return 'https://ui-avatars.com/api/?name=' + encodeURIComponent(n) + '&background=random&size=128';
+    }
+
+    function formatLastSeen(ts) {
+        if (!ts) return '';
+        const d = new Date(ts);
+        return '最后在线: ' + d.toLocaleString();
+    }
+
+    // javascript (修改 profile.html 中的 loadProfile 内部)
+    async function loadProfile(username) {
+        try {
+            const res = await fetch(`${apiBase}/${encodeURIComponent(username)}`);
+            if (!res.ok) {
+                alert('读取失败: ' + res.status);
+                return;
+            }
+            const p = await res.json();
+
+            // 输出完整返回以便排查
+            console.log('profile API 返回：', p);
+
+            // 规范 displayName：只有非空且非纯空白才认为存在
+            const dnRaw = (p.displayName && String(p.displayName).trim()) ? String(p.displayName).trim() : null;
+            if (dnRaw && dnRaw === p.username) {
+                console.warn('注意：返回的 displayName 与 username 相同，可能是后端保存/读取问题。');
+            }
+
+            const avatarUrl = (p.avatarUrl && p.avatarUrl.trim()) ? p.avatarUrl : generateAvatarUrl(dnRaw || p.username);
+            document.getElementById('avatar').src = avatarUrl;
+
+            // 如果后端确实返回了真正的 displayName 则显示，否则回退到 username（但编辑框保持为空以便用户修改）
+            document.getElementById('displayName').textContent = dnRaw || p.username;
+            document.getElementById('usernameDisplay').textContent = '@' + p.username;
+            document.getElementById('bio').textContent = p.bio || '暂无简介';
+            const statusEl = document.getElementById('status');
+            const statusIconEl = document.getElementById('statusIcon');
+            statusEl.textContent = p.online ? '在线' : '离线';
+            statusEl.className = p.online ? 'text-sm font-medium text-accent' : 'text-sm font-medium text-gray-500';
+            statusIconEl.className = p.online ? 'fa fa-circle text-accent' : 'fa fa-circle text-gray-400';
+            document.getElementById('lastSeen').textContent = p.online ? '' : formatLastSeen(p.lastSeen);
+
+            // 编辑框：把真正的 displayName 填入；如果后端把 displayName 写成 username，
+            // 这里会显示 username —— 如果你不想这样可改为只在 dnRaw 存在时写入
+            document.getElementById('editDisplayName').value = dnRaw || '';
+            document.getElementById('editBio').value = p.bio || '';
+            document.getElementById('editAvatar').value = p.avatarUrl || '';
+            document.getElementById('profileSection').classList.remove('hidden');
+            document.getElementById('profileSection').classList.add('grid');
+
+            document.getElementById('profileSection').classList.add('animate-fadeIn');
+        } catch (e) {
+            console.error(e);
+            alert('读取资料时发生错误');
+        }
+    }
+
+
+    async function saveProfile() {
+        if (!currentUsername) return;
+        const payload = {
+            displayName: document.getElementById('editDisplayName').value.trim(),
+            bio: document.getElementById('editBio').value.trim(),
+            avatarUrl: document.getElementById('editAvatar').value.trim()
+        };
+        try {
+            const res = await fetch(`${apiBase}/${encodeURIComponent(currentUsername)}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) { alert('保存失败: ' + res.status); return; }
+            // 重新加载并更新显示
+            await loadProfile(currentUsername);
+            appendMessage('系统', '资料已保存', 'system');
+        } catch (e) {
+            console.error(e);
+            alert('保存资料时发生错误');
+        }
+    }
+
+    function openWs(username) {
+        try {
+            if (ws) {
+                try { ws.close(); } catch (e) {}
+                ws = null;
+            }
+            ws = new WebSocket(`${wsBase}?username=${encodeURIComponent(username)}`);
+            ws.onopen = () => appendMessage('系统', 'WebSocket 已连接', 'system');
+            ws.onmessage = evt => {
+                try {
+                    const m = JSON.parse(evt.data);
+                    // 假设系统消息的 fromUser 是 '系统'
+                    const type = m.fromUser === '系统' ? 'system' : 'user';
+                    appendMessage(m.fromUser || '对方', m.content || JSON.stringify(m), type);
+                } catch (e) {
+                    appendMessage('收到', evt.data, 'user');
+                }
+            };
+            ws.onclose = () => appendMessage('系统', 'WebSocket 已关闭', 'system');
+            ws.onerror = (err) => {
+                console.error('WS 错误', err);
+                appendMessage('系统', 'WebSocket 发生错误', 'system');
+            };
+        } catch (e) {
+            console.error(e);
+            appendMessage('系统', '无法打开 WebSocket', 'system');
+        }
+    }
+
+    function appendMessage(from, text, type = 'user') {
+        const box = document.getElementById('messages');
+        const div = document.createElement('div');
+
+        // 根据消息类型应用不同样式
+        if (type === 'system') {
+            div.className = 'flex justify-center';
+            div.innerHTML = `<span class="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">${text}</span>`;
+        } else {
+            div.className = 'flex items-start gap-2';
+            div.innerHTML = `
+                <div class="w-6 h-6 rounded-full bg-primary/20 flex-shrink-0 flex items-center justify-center text-primary text-xs">
+                    ${from.substring(0, 1)}
+                </div>
+                <div>
+                    <div class="flex items-baseline gap-2">
+                        <span class="font-medium text-gray-800">${from}</span>
+                        <span class="text-gray-400 text-xs">${new Date().toLocaleTimeString()}</span>
+                    </div>
+                    <p class="text-gray-600 text-sm">${text.replace(/\n/g, '<br>')}</p>
+                </div>
+            `;
+        }
+
+        // 添加消息动画
+        div.classList.add('animate-fadeIn');
+        box.appendChild(div);
+        box.scrollTop = box.scrollHeight;
+    }
+
+    document.getElementById('loadBtn').addEventListener('click', () => {
+        const u = document.getElementById('usernameInput').value.trim();
+        if (!u) return alert('请输入用户名');
+        currentUsername = u;
+        loadProfile(u);
+        openWs(u);
+        // 更新浏览器地址栏
+        try {
+            const params = new URLSearchParams(location.search);
+            params.set('username', u);
+            const newUrl = location.pathname + '?' + params.toString();
+            history.replaceState({}, '', newUrl);
+        } catch (e) { /* ignore */ }
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', saveProfile);
+
+    // 自动从 URL 查询参数加载 username
+    (function autoLoadFromQuery() {
+        try {
+            const params = new URLSearchParams(location.search);
+            const u = params.get('username');
+            if (u && u.trim()) {
+                document.getElementById('usernameInput').value = u;
+                currentUsername = u;
+                // 使用 setTimeout 确保 DOM 完全加载
+                setTimeout(() => {
+                    loadProfile(u);
+                    openWs(u);
+                }, 100);
+            }
+        } catch (e) {
+            console.error('自动加载用户名失败', e);
+        }
+    })();
+</script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 let username = prompt("请输入你的用户名：");
 if (!username) username = "游客" + Math.floor(Math.random() * 1000);
 
-const ws = new WebSocket(`ws://172.20.10.3:8080/chat?username=${username}`);
+const ws = new WebSocket(`ws://10.128.154.24:8080/chat?username=${username}`);
 
 const chatBox = document.getElementById("chatBox");
 const messageInput = document.getElementById("messageInput");
