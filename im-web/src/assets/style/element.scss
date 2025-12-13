@@ -1,0 +1,126 @@
+/* 改变 icon 字体路径变量，必需 */
+$--font-path: '~element-ui/lib/theme-chalk/fonts';
+
+// 文字
+// 使用系统中文字体及常见西文字体（不依赖 SCSS 变量）
+$font-family: Microsoft YaHei, 'Avenir', Helvetica, Arial, sans-serif;
+
+// ===== 提供 im.scss 所需的 SCSS 变量（不依赖 Element-UI） =====
+$--color-primary: #409EFF;
+$--color-success: #67C23A;
+$--color-warning: #E6A23C;
+$--color-danger: #F56C6C;
+$--color-info: #909399;
+$--color-text-regular: #606266;
+
+$--font-size-base: 14px;
+$--font-size-small: 13px;
+$--font-size-extra-small: 12px;
+$--font-size-medium: 16px;
+$--font-size-large: 18px;
+$--font-family: $font-family;
+
+$--box-shadow-base: 0 2px 12px 0 rgba(0,0,0,.10);
+$--box-shadow-light: 0 2px 12px 0 rgba(0,0,0,.08);
+
+// 生成主色的浅色系列（1-9）
+$--color-primary-light-1: mix(#fff, $--color-primary, 10%);
+$--color-primary-light-2: mix(#fff, $--color-primary, 20%);
+$--color-primary-light-3: mix(#fff, $--color-primary, 30%);
+$--color-primary-light-4: mix(#fff, $--color-primary, 40%);
+$--color-primary-light-5: mix(#fff, $--color-primary, 50%);
+$--color-primary-light-6: mix(#fff, $--color-primary, 60%);
+$--color-primary-light-7: mix(#fff, $--color-primary, 70%);
+$--color-primary-light-8: mix(#fff, $--color-primary, 80%);
+$--color-primary-light-9: mix(#fff, $--color-primary, 90%);
+
+// 移除：@import "~element-ui/packages/theme-chalk/src/index";
+
+.el-message {
+  z-index: 99999999 !important;
+  background: #fff !important;
+  box-shadow: 0 4px 12px 0 rgb(0 0 0 / 15%);
+  border: none !important;
+  min-width: unset !important;
+  border-radius: 3px !important;
+  padding: 14px 18px 14px 16px !important;
+
+  .el-message__content {
+    color: #000 !important;
+  }
+}
+
+.el-scrollbar__thumb {
+  background-color: #A0A8AF !important;
+}
+
+.el-dialog__title {
+  font-size: var(--im-font-size-larger);
+  color: var(--im-text-color);
+}
+
+.el-dialog__header {
+  padding: 12px 18px !important;
+}
+
+.el-dialog__headerbtn {
+  top: 15px;
+  right: 20px;
+  font-size: 18px;
+}
+
+.el-checkbox__inner {
+  border-radius: 50% !important;
+}
+
+.el-button {
+  padding: 8px 15px !important;
+}
+
+.el-checkbox {
+  display: flex;
+  align-items: center;
+
+  .el-checkbox__inner {
+    width: 16px;
+    height: 16px;
+    &::after {
+      height: 7px;
+      left: 5px;
+      top: 2px;
+    }
+  }
+
+  .el-checkbox__input.is-checked + .el-checkbox__label {
+    color: #333333;
+  }
+
+  .el-checkbox__label {
+    line-height: 20px;
+    padding-left: 8px;
+  }
+}
+
+.el-form-item {
+  margin-bottom: 15px !important;
+}
+
+.el-input--small {
+  font-size: 14px; // Element 默认字号
+}
+
+.el-input__inner {
+  padding: 0 10px;
+}
+
+.el-textarea__inner {
+  padding: 5px 10px;
+  font-family: $font-family;
+}
+
+.el-tag--mini {
+  height: 18px;
+  padding: 0 2px;
+  line-height: 16px;
+  border-radius: 2px;
+}
